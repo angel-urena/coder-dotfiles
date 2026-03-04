@@ -3,9 +3,15 @@ set -euo pipefail
 
 # Install all tools via mise
 export PATH="$HOME/.local/bin:$PATH"
+
+# Pass GitHub token to mise to avoid rate limits
+if [[ -n "${GITHUB_TOKEN:-}" ]]; then
+	export GITHUB_API_TOKEN="$GITHUB_TOKEN"
+fi
+
 echo "Installing tools via mise..."
 mise trust
-mise install
+mise install || echo "Warning: some tools failed to install (likely rate-limited). Re-run 'mise install' later."
 
 # Use shims so tools are available for the rest of this script
 export PATH="$HOME/.local/share/mise/shims:$PATH"
