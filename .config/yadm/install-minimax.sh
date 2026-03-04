@@ -3,6 +3,11 @@ set -euo pipefail
 
 MINIMAX_DIR="$HOME/.local/share/MiniMax"
 
+if ! command -v nvim >/dev/null 2>&1; then
+	echo "nvim not found, skipping MiniMax setup."
+	exit 0
+fi
+
 echo "Installing MiniMax for nvim..."
 
 if [[ -d "$MINIMAX_DIR" ]]; then

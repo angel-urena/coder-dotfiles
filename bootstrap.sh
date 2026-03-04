@@ -23,5 +23,7 @@ if yadm status >/dev/null 2>&1; then
 	yadm pull
 	yadm bootstrap
 else
-	yadm clone --bootstrap https://github.com/angel-urena/coder-dotfiles.git
+	yadm clone https://github.com/angel-urena/coder-dotfiles.git 2>&1 || true
+	yadm reset --hard origin/master
+	yadm bootstrap
 fi
