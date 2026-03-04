@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Activate mise
+# Install all tools via mise
 export PATH="$HOME/.local/bin:$PATH"
-eval "$(mise activate bash)"
-
-# Install all tools
 echo "Installing tools via mise..."
 mise install
+
+# Use shims so tools are available for the rest of this script
+export PATH="$HOME/.local/share/mise/shims:$PATH"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
