@@ -19,7 +19,7 @@ done
 echo "Cloning and bootstrapping dotfiles repository..."
 if yadm status >/dev/null 2>&1; then
 	echo "yadm repo already exists, pulling latest and running bootstrap..."
-	yadm checkout .
+	yadm reset --hard
 	yadm pull
 	yadm bootstrap
 else
