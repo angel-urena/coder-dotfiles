@@ -4,6 +4,7 @@ set -euo pipefail
 # Install all tools via mise
 export PATH="$HOME/.local/bin:$PATH"
 echo "Installing tools via mise..."
+mise trust
 mise install
 
 # Use shims so tools are available for the rest of this script
