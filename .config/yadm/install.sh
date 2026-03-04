@@ -1,28 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Source Nix profile
-if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
-	. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-fi
+# Activate mise
+export PATH="$HOME/.local/bin:$PATH"
+eval "$(mise activate bash)"
 
-# Start nix-daemon if the socket is missing (containers without systemd)
-if [[ ! -S /nix/var/nix/daemon-socket/socket ]]; then
-	sudo /nix/var/nix/profiles/default/bin/nix-daemon &
-	while [[ ! -S /nix/var/nix/daemon-socket/socket ]]; do
-		sleep 0.1
-	done
-fi
+# Install all tools
+echo "Installing tools via mise..."
+mise install
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-DEVENV_DIR="$HOME/.config/devenv"
-
-echo "Building devenv environment..."
-cd "$DEVENV_DIR"
-devenv shell -- true
-
-# Add devenv profile to PATH so all tools are available directly
-export PATH="$DEVENV_DIR/.devenv/profile/bin:$PATH"
 
 "$SCRIPT_DIR/install-minimax.sh"
 
@@ -42,20 +29,6 @@ if [[ ! -f "$BAT_THEMES_DIR/Catppuccin Mocha.tmTheme" ]]; then
 	curl -fsSL -o "$BAT_THEMES_DIR/Catppuccin Mocha.tmTheme" \
 		"https://raw.githubusercontent.com/catppuccin/bat/main/themes/Catppuccin%20Mocha.tmTheme"
 	bat cache --build
-fi
-
-# Set fish as the default shell
-FISH_PATH="$DEVENV_DIR/.devenv/profile/bin/fish"
-if [[ -x "$FISH_PATH" ]]; then
-	if ! grep -qxF "$FISH_PATH" /etc/shells; then
-		echo "Adding fish to /etc/shells..."
-		echo "$FISH_PATH" | sudo tee -a /etc/shells >/dev/null
-	fi
-
-	if [[ "$SHELL" != "$FISH_PATH" ]]; then
-		echo "Setting fish as the default shell..."
-		sudo chsh -s "$FISH_PATH" "$(whoami)"
-	fi
 fi
 
 echo "Done!"

@@ -1,49 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Start nix-daemon if the socket is missing (containers without systemd)
-ensure_nix_daemon() {
-	# Add current user as trusted so devenv/cachix can configure binary caches
-	local nix_conf="/etc/nix/nix.conf"
-	if [[ -f "$nix_conf" ]] && ! grep -q "trusted-users.*$(whoami)" "$nix_conf"; then
-		echo "trusted-users = root $(whoami)" | sudo tee -a "$nix_conf" >/dev/null
+# Install mise
+if ! command -v mise >/dev/null 2>&1; then
+	echo "Installing mise..."
+	curl https://mise.run | sh
+fi
+export PATH="$HOME/.local/bin:$PATH"
+
+# Install yadm and fish via apt
+for pkg in yadm fish; do
+	if ! command -v "$pkg" >/dev/null 2>&1; then
+		echo "Installing $pkg..."
+		sudo apt-get update -qq && sudo apt-get install -y -qq "$pkg"
 	fi
-
-	if [[ ! -S /nix/var/nix/daemon-socket/socket ]]; then
-		sudo /nix/var/nix/profiles/default/bin/nix-daemon &
-		# Wait for the socket to appear
-		while [[ ! -S /nix/var/nix/daemon-socket/socket ]]; do
-			sleep 0.1
-		done
-	fi
-}
-
-# Source Nix profile if already installed
-if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
-	. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-	ensure_nix_daemon
-fi
-
-# Install Nix via Determinate Systems installer (container-friendly)
-if ! command -v nix >/dev/null 2>&1; then
-	echo "Installing Nix..."
-	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix |
-		sh -s -- install --no-confirm
-	. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
-	ensure_nix_daemon
-fi
-
-# Install devenv
-if ! command -v devenv >/dev/null 2>&1; then
-	echo "Installing devenv..."
-	nix profile install nixpkgs#devenv
-fi
-
-# Install yadm
-if ! command -v yadm >/dev/null 2>&1; then
-	echo "Installing yadm..."
-	nix profile install nixpkgs#yadm
-fi
+done
 
 echo "Cloning and bootstrapping dotfiles repository..."
 if yadm status >/dev/null 2>&1; then

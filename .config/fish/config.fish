@@ -1,11 +1,3 @@
-# Nix
-if test -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
-    source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
-end
-
-# devenv packages
-fish_add_path "$HOME/.config/devenv/.devenv/profile/bin"
-
 # Starship prompt
 if command -q starship
     starship init fish | source
