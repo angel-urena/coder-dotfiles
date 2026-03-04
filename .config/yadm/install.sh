@@ -21,8 +21,8 @@ echo "Building devenv environment..."
 cd "$DEVENV_DIR"
 devenv shell -- true
 
-# Use devenv shell for all post-install steps so tools are on PATH
-DEVENV_SHELL="devenv shell --"
+# Add devenv profile to PATH so all tools are available directly
+export PATH="$DEVENV_DIR/.devenv/profile/bin:$PATH"
 
 "$SCRIPT_DIR/install-minimax.sh"
 
@@ -32,17 +32,16 @@ if [[ ! -d "$TPM_DIR" ]]; then
 	echo "Installing TPM..."
 	git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
 fi
-cd "$DEVENV_DIR"
-$DEVENV_SHELL "$TPM_DIR/bin/install_plugins"
+"$TPM_DIR/bin/install_plugins"
 
 # Install Catppuccin Mocha theme for bat
-BAT_THEMES_DIR="$($DEVENV_SHELL bat --config-dir)/themes"
+BAT_THEMES_DIR="$(bat --config-dir)/themes"
 mkdir -p "$BAT_THEMES_DIR"
 if [[ ! -f "$BAT_THEMES_DIR/Catppuccin Mocha.tmTheme" ]]; then
 	echo "Installing Catppuccin Mocha theme for bat..."
 	curl -fsSL -o "$BAT_THEMES_DIR/Catppuccin Mocha.tmTheme" \
 		"https://raw.githubusercontent.com/catppuccin/bat/main/themes/Catppuccin%20Mocha.tmTheme"
-	$DEVENV_SHELL bat cache --build
+	bat cache --build
 fi
 
 # Set fish as the default shell
