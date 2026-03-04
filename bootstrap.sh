@@ -30,7 +30,7 @@ fi
 # Install devenv
 if ! command -v devenv >/dev/null 2>&1; then
 	echo "Installing devenv..."
-	nix profile install --accept-flake-config github:cachix/devenv/latest
+	nix profile install nixpkgs#devenv
 fi
 
 # Install yadm
