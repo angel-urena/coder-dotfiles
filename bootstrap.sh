@@ -4,7 +4,7 @@ set -euo pipefail
 # Start nix-daemon if the socket is missing (containers without systemd)
 ensure_nix_daemon() {
 	if [[ ! -S /nix/var/nix/daemon-socket/socket ]]; then
-		sudo nix-daemon &
+		sudo /nix/var/nix/profiles/default/bin/nix-daemon &
 		# Wait for the socket to appear
 		while [[ ! -S /nix/var/nix/daemon-socket/socket ]]; do
 			sleep 0.1

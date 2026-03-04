@@ -8,7 +8,7 @@ fi
 
 # Start nix-daemon if the socket is missing (containers without systemd)
 if [[ ! -S /nix/var/nix/daemon-socket/socket ]]; then
-	sudo nix-daemon &
+	sudo /nix/var/nix/profiles/default/bin/nix-daemon &
 	while [[ ! -S /nix/var/nix/daemon-socket/socket ]]; do
 		sleep 0.1
 	done
