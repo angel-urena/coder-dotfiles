@@ -4,7 +4,7 @@ set -euo pipefail
 # Install mise
 if ! command -v mise >/dev/null 2>&1; then
 	echo "Installing mise..."
-	curl https://mise.run | sh
+	curl https://mise.run | MISE_INSTALL_EXT=tar.gz sh
 fi
 export PATH="$HOME/.local/bin:$PATH"
 
