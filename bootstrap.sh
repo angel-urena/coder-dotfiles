@@ -3,6 +3,12 @@ set -euo pipefail
 
 # Start nix-daemon if the socket is missing (containers without systemd)
 ensure_nix_daemon() {
+	# Add current user as trusted so devenv/cachix can configure binary caches
+	local nix_conf="/etc/nix/nix.conf"
+	if [[ -f "$nix_conf" ]] && ! grep -q "trusted-users.*$(whoami)" "$nix_conf"; then
+		echo "trusted-users = root $(whoami)" | sudo tee -a "$nix_conf" >/dev/null
+	fi
+
 	if [[ ! -S /nix/var/nix/daemon-socket/socket ]]; then
 		sudo /nix/var/nix/profiles/default/bin/nix-daemon &
 		# Wait for the socket to appear
