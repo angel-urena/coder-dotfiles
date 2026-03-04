@@ -6,6 +6,14 @@ if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
 	. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 fi
 
+# Start nix-daemon if the socket is missing (containers without systemd)
+if [[ ! -S /nix/var/nix/daemon-socket/socket ]]; then
+	sudo nix-daemon &
+	while [[ ! -S /nix/var/nix/daemon-socket/socket ]]; do
+		sleep 0.1
+	done
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 DEVENV_DIR="$HOME/.config/devenv"
 

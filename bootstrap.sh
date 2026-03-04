@@ -1,17 +1,30 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Start nix-daemon if the socket is missing (containers without systemd)
+ensure_nix_daemon() {
+	if [[ ! -S /nix/var/nix/daemon-socket/socket ]]; then
+		sudo nix-daemon &
+		# Wait for the socket to appear
+		while [[ ! -S /nix/var/nix/daemon-socket/socket ]]; do
+			sleep 0.1
+		done
+	fi
+}
+
 # Source Nix profile if already installed
 if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
 	. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+	ensure_nix_daemon
 fi
 
-# Install Nix via Determinate Systems installer (container-friendly, no daemon needed)
+# Install Nix via Determinate Systems installer (container-friendly)
 if ! command -v nix >/dev/null 2>&1; then
 	echo "Installing Nix..."
 	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix |
 		sh -s -- install --no-confirm
 	. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+	ensure_nix_daemon
 fi
 
 # Install devenv
