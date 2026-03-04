@@ -1,28 +1,30 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Add brew to PATH (needed on re-runs and after fresh install)
-if [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-	eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-elif [[ -f /opt/homebrew/bin/brew ]]; then
-	eval "$(/opt/homebrew/bin/brew shellenv)"
+# Source Nix profile if already installed
+if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
+	. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 fi
 
-# install homebrew if it's missing
-if ! command -v brew >/dev/null 2>&1; then
-	echo "Installing homebrew..."
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-	# Add brew to PATH after fresh install
-	if [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-		eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-	elif [[ -f /opt/homebrew/bin/brew ]]; then
-		eval "$(/opt/homebrew/bin/brew shellenv)"
-	fi
+# Install Nix via Determinate Systems installer (container-friendly, no daemon needed)
+if ! command -v nix >/dev/null 2>&1; then
+	echo "Installing Nix..."
+	curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix |
+		sh -s -- install --no-confirm
+	. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 fi
 
-echo "Installing yadm via homebrew..."
-brew install yadm
+# Install devenv
+if ! command -v devenv >/dev/null 2>&1; then
+	echo "Installing devenv..."
+	nix profile install --accept-flake-config github:cachix/devenv/latest
+fi
+
+# Install yadm
+if ! command -v yadm >/dev/null 2>&1; then
+	echo "Installing yadm..."
+	nix profile install nixpkgs#yadm
+fi
 
 echo "Cloning and bootstrapping dotfiles repository..."
 if yadm status >/dev/null 2>&1; then

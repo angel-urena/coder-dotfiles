@@ -1,9 +1,10 @@
-# Homebrew
-if test -d /home/linuxbrew/.linuxbrew
-    eval (/home/linuxbrew/.linuxbrew/bin/brew shellenv)
-else if test -d /opt/homebrew
-    eval (/opt/homebrew/bin/brew shellenv)
+# Nix
+if test -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
+    source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
 end
+
+# devenv packages
+fish_add_path "$HOME/.config/devenv/.devenv/profile/bin"
 
 # Starship prompt
 if command -q starship

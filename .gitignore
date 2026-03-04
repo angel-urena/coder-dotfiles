@@ -1,1 +1,4 @@
 .claude/*.local.*
+.config/devenv/.devenv
+.config/devenv/devenv.lock
+.config/devenv/.devenv.flake.nix
