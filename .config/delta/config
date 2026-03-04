@@ -1,0 +1,11 @@
+[delta]
+    syntax-theme = Catppuccin Mocha
+    minus-style = syntax "#3b2630"
+    minus-emph-style = syntax "#53303a"
+    plus-style = syntax "#273332"
+    plus-emph-style = syntax "#30493e"
+    line-numbers-minus-style = "#f38ba8"
+    line-numbers-plus-style = "#a6e3a1"
+    line-numbers-zero-style = "#6c7086"
+    hunk-header-decoration-style = "box ul"
+    hunk-header-style = "file line-number syntax"
