@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Ensure brew is on PATH
+if [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+	eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+elif [[ -f /opt/homebrew/bin/brew ]]; then
+	eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "Updating homebrew bundle..."
