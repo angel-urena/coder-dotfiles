@@ -28,6 +28,14 @@ if command -v tmux >/dev/null 2>&1; then
 		git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
 	fi
 	"$TPM_DIR/bin/install_plugins"
+
+	# Seed tmux-resurrect save dir so continuum-restore doesn't error on first launch
+	RESURRECT_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/tmux/resurrect"
+	if [[ ! -f "$RESURRECT_DIR/last" ]]; then
+		mkdir -p "$RESURRECT_DIR"
+		printf 'pane\t0\t0\t:*\t0\t:%s\t1\t fish\t:\t0' "$HOME" > "$RESURRECT_DIR/tmux_resurrect_seed.txt"
+		ln -sf tmux_resurrect_seed.txt "$RESURRECT_DIR/last"
+	fi
 fi
 
 # Install Catppuccin Mocha theme for bat

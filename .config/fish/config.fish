@@ -1,3 +1,6 @@
+# Disable fish greeting
+set -g fish_greeting ""
+
 # Starship prompt
 if command -q starship
     starship init fish | source
