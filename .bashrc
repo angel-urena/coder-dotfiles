@@ -6,7 +6,9 @@ fi
 
 # Launch fish for interactive sessions only
 FISH_PATH="/usr/bin/fish"
-if [ -t 1 ] && [ -x "$FISH_PATH" ] && [ -z "$FISH_LAUNCHED" ]; then
+# Only hand off to fish for interactive shells; `ssh host cmd` (and mosh, which
+# forces a tty) must still run the requested command under bash.
+if [[ $- == *i* ]] && [ -t 1 ] && [ -x "$FISH_PATH" ] && [ -z "$FISH_LAUNCHED" ]; then
 	export FISH_LAUNCHED=1
 	exec "$FISH_PATH"
 fi
