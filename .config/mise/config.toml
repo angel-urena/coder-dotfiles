@@ -25,3 +25,7 @@ yazi = "latest"
 yq = "latest"
 zoxide = "latest"
 "github:YS-L/csvlens" = "latest"
+node = "lts"
+
+[settings.erlang]
+precompiled_os = "ubuntu-24.04"
