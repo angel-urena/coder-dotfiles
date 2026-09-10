@@ -5,7 +5,7 @@ delta = "latest"
 eza = "latest"
 fd = "latest"
 fzf = "latest"
-gcloud = "latest"
+gcloud = { version = "latest", postinstall = '"$MISE_TOOL_INSTALL_PATH/bin/gcloud" components install gke-gcloud-auth-plugin --quiet' }
 github-cli = "latest"
 jq = "latest"
 jqp = "latest"
@@ -26,6 +26,7 @@ yq = "latest"
 zoxide = "latest"
 "github:YS-L/csvlens" = "latest"
 node = "lts"
+kubectl = "latest"
 
 [settings.erlang]
 precompiled_os = "ubuntu-24.04"
