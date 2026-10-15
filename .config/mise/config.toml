@@ -27,6 +27,7 @@ zoxide = "latest"
 "github:YS-L/csvlens" = "latest"
 node = "lts"
 kubectl = "latest"
+codex = "latest"
 
 [settings.erlang]
 precompiled_os = "ubuntu-24.04"
