@@ -38,3 +38,14 @@ end
 if command -q bat
     alias cat "bat --paging=never"
 end
+
+# codex is managed by mise, so route `codex update` through mise
+if command -q codex
+    function codex --wraps codex
+        if test (count $argv) -eq 1 -a "$argv[1]" = update
+            mise upgrade codex
+        else
+            command codex $argv
+        end
+    end
+end
